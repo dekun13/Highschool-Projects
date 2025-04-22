@@ -1,0 +1,64 @@
+public class gradeChecker {
+
+    public static void main(String[] args) {
+        grades report = new grades(); //making object to access grades class
+        
+        System.out.println("Name: " + report.name);
+        System.out.print("Scores: [");
+        
+        int i = 1;
+        double sum = 0d;
+        int intsum = 0;
+        
+        while (true) {
+            if (i < report.scores.length) {
+                System.out.print(report.scores[i - 1] + ", ");
+                sum += report.scores[i - 1];
+                i++;
+            }   else if (i == report.scores.length) {
+                System.out.println(report.scores[i - 1] + "]");
+                sum += report.scores[i - 1];
+                break;
+            }
+        }
+        
+        
+        System.out.println("Average: " + sum / report.scores.length);
+        
+        intsum = (int)((sum / report.scores.length) / 10 + 1);
+        
+        switch (intsum) {
+            case 10:
+                System.out.println("Grade: A"); //90+
+                System.out.println("Bro keep it up and you'll go Harvard!!");
+                break;
+                
+            case 9:
+                System.out.println("Grade: B"); //80+
+                System.out.println("One step away from Harvard!");
+                break;
+                
+            case 8:
+                System.out.println("Grade: C"); //70+
+                System.out.println("Come'on you've got potential");
+                break;
+                
+            case 7:
+                System.out.println("Grade: D"); //60+
+                System.out.println("Read your textbooks please");
+                break;
+                
+            default:
+                System.out.println("Grade: F");
+                System.out.println("Call this [McDonald's number] and ask if they're hiring");
+                break;
+        }
+    }
+}
+
+public class grades {
+    String name = "kid1";
+    
+    int[] scores = {98, 86, 67, 46};
+    String[] subjects = {"Science", "Math", "English", "ICT"}; //Must correspond to the scores 
+}
