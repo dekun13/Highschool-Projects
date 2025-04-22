@@ -1,0 +1,240 @@
+import time
+
+food_sources = {
+    "white rice": {"calories": 130},
+    "brown rice": {"calories": 111},
+    "spaghetti": {"calories": 158},
+    "ramen": {"calories": 188},
+    "whole wheat bread": {"calories": 247},
+    "white bread": {"calories": 266},
+    "russet potato": {"calories": 94},
+    "sweet potato": {"calories": 86},
+    "penne": {"calories": 158},
+    "fusilli": {"calories": 156},
+    "corn flakes": {"calories": 357},
+    "oatmeal": {"calories": 71},
+    "chickpeas": {"calories": 164},
+    "lentils": {"calories": 116},
+    "chicken breast": {"calories": 165},
+    "salmon": {"calories": 206},
+    "egg": {"calories": 155},
+    "tofu": {"calories": 76},
+    "lean beef": {"calories": 250},
+    "turkey breast": {"calories": 135},
+    "greek yogurt": {"calories": 59},
+    "cottage cheese": {"calories": 98},
+    "pork loin": {"calories": 143},
+    "albacore tuna": {"calories": 128},
+    "shrimp": {"calories": 99},
+    "soybeans": {"calories": 173},
+    "quinoa": {"calories": 120},
+    "lentils": {"calories": 116},
+    "almonds": {"calories": 579},
+    "olive oil": {"calories": 884},
+    "avocado": {"calories": 160},
+    "walnuts": {"calories": 654},
+    "peanut butter": {"calories": 588},
+    "chia seeds": {"calories": 486},
+    "flaxseeds": {"calories": 534},
+    "dark chocolate": {"calories": 546},
+}
+#All are based on 100g, sources are taken from calories.info
+#Link: https://www.calories.info
+
+weight = 1
+age = 0
+gender = "n"
+height = 0
+targetweight = 0
+activitylevel = 0
+bmr = 0
+tdee = 0
+al = 0
+carb = 0
+protein = 0
+fat = 0
+calories = 0
+breakfastcal = 0
+lunchcal = 0
+dinnercal = 0
+extramealscal = 0
+totalcalories = 0
+grams = 0
+
+goalreached = "n"
+page = 1
+infocomplete = "n"
+day = 1
+
+
+def validate(num):
+    #This procedure validates user's input to ensure only numbers are entered
+    #This will contribute to the program by minimizing errors related to input errors
+    while True:
+        userinput = input(num)
+        try:
+            validatedinput = float(userinput)
+            if validatedinput.is_integer():
+                print(" ")
+                return int(validatedinput)
+            else:
+                print(" ")    
+                return validatedinput
+        except ValueError:
+            print("Please enter only numbers")
+            print(" ")
+#Reference from w3schools regarding converting values to integers and floats
+#Link: https://www.w3schools.com/python/python_numbers.asp
+#Reference from w3schools regarding global variables
+#Link https://www.w3schools.com/python/python_variables_global.asp
+
+
+def calculateAL(activity_level):
+    #This procedure returns the correct activity level multiplier, which later will be essential in many of the calculations
+    activity_factors = {
+        1: 1.2,
+        2: 1.375,
+        3: 1.55,
+        4: 1.725,
+        5: 1.9
+    }
+    return activity_factors.get(activity_level, None)
+#This code is created and optimized together with Github Copilot
+#Reference is from Steelfit USA regarding activity levels
+#Link: https://steelfitusa.com/blogs/health-and-wellness/calculate-tdee
+
+
+def calculateCal(grams):
+    #This procedure calculates the calories of the food eaten by the user, which is one of the core purpose of the program
+    global calories, food_sources
+    all_foods = {**food_sources} 
+    while True:
+        foodeaten = input("Enter the food you ate. Enter 'n' to exit: ")
+        print("")
+        if foodeaten.lower() == "n":
+            break
+        if foodeaten in all_foods:
+            grams = validate("Enter the weight of the food eaten in grams: ")
+            food_calories = (grams / 100) * all_foods[foodeaten]["calories"]
+            calories += food_calories
+            print(f"{food_calories} calories from {grams} grams of {foodeaten}.")
+            print("")
+        else:
+            print("Food not found, please enter a valid food item from the list.")
+            print("")
+
+#F-strings are explained and provided by Github Copilot
+#Reference for Double Star Operator (**) is from Geeksforgeeks
+#Link: https://www.geeksforgeeks.org/what-does-the-double-star-operator-mean-in-python/
+
+
+def calculateTDEE(al, weight, height, age, gender):
+    #This procedure calculates the Total Daily Energy Expenditure (TDEE) of the user
+        #This is essential for the user to correctly track their progress
+    if gender == "m":
+        bmr = 10*weight + 6.25*height - 5*age + 5
+    elif gender == "f":
+        bmr = 10*weight + 6.25*height - 5*age - 161
+    tdee = bmr * al
+    return tdee
+#Reference for TDEE formula is from Steelfit USA
+#Link: https://steelfitusa.com/blogs/health-and-wellness/calculate-tdee
+
+while goalreached == "n":
+    #This is the main loop and the core of this program
+    #This loop fulfils the purpose of the program, which is to help the user track their daily calorie intake
+    if weight == targetweight:
+        goalreached = "y"
+        print("You've reached your target weight.")
+        print(" ")
+    elif weight != targetweight and infocomplete == "n":
+        if page == 1:
+            weight = validate("Please enter your current weight (In KG):  ")
+            page += 1
+        elif page == 2:
+            age = validate("Please enter your age:  ")
+            page += 1
+        elif page == 3:
+            height = validate("Enter your height (In CM):  ")
+            page += 1
+        elif page == 4:
+            gender = input("Enter your gender (M/F, not case sensitive):  ")
+            if gender.lower() != "m" and gender.lower() != "f":
+                print("Please enter only M/F")
+            else:
+                print(" ")    
+                page += 1
+        elif page == 5:
+            targetweight = validate("Enter your desired weight (In KG):  ")
+            if targetweight != weight:
+                page += 1
+            else:
+                print("Desired weight is equal to your current weight!")
+        elif page == 6:
+            print("Select your activity level below:  ")
+            print("1. Sedentary (little to no exercise)")
+            print("2. Lightly active (light exercise 1-3 days/week)")
+            print("3. Moderately active (moderate exercise 3-5 days/week)")
+            print("4. Very active (hard exercise 6-7 days a week)")
+            print("5. Athlete or working a physical job")
+            activitylevel = validate("Please enter your activity level (1-5): ")
+            if activitylevel in [1, 2, 3, 4 ,5]:
+                al = calculateAL(activitylevel)
+                tdee = calculateTDEE(al, weight, height, age, gender)
+                infocomplete = "y"
+            else:
+                print("Please enter only 1-5")
+    else:
+        print("Day:  ", day)
+        print("Your goal for today is to eat: ", tdee, "Calories.")
+        print("You have eaten:", totalcalories, "Calories.")
+        print("Your current weight is:", weight)
+        print("Your desired weight is:", targetweight)
+        print(" ")
+        print("1. Breakfast")
+        print("2. Lunch")
+        print("3. Dinner")
+        print("4. Extra Meals")
+        print("5. Next Day")
+        print("Please select a meal to record, or move on to the next day")
+        recordmeal = validate("Enter 1 to 5:  ")
+        if recordmeal in [1, 2, 3, 4]:
+            calculateCal(grams)
+            if recordmeal == 1:
+                breakfastcal += calories
+            elif recordmeal == 2:
+                lunchcal += calories
+            elif recordmeal == 3:
+                dinnercal += calories    
+            elif recordmeal == 4:
+                extramealscal += calories
+            totalcalories = breakfastcal + lunchcal + dinnercal + extramealscal
+            calories = 0 
+        elif recordmeal == 5:
+            day += 1
+            print("You've eaten an equivalent of:")
+            print("Breakfast: ", breakfastcal, "Calories")
+            print("Lunch: ", lunchcal, "Calories")
+            print("Dinner: ", dinnercal, "Calories")
+            print("Extra Meals: ", extramealscal, "Calories")
+            print(" ")
+            if totalcalories >= tdee:
+                print("You've reached your daily goal.")
+                weight = validate("Enter your weight today (In KG):  ")
+                print("")
+                time.sleep(1)
+            elif totalcalories < tdee:
+                print("You're", tdee - totalcalories, "Calories away from your daily goal.")
+                weight = validate("Enter your weight today (In KG):  ")
+                print("")
+                time.sleep(1)
+            breakfastcal = 0
+            lunchcal = 0
+            dinnercal = 0
+            extramealscal = 0
+            totalcalories = 0
+        else:
+            print("Please enter only 1-5")
+            print("")
+#Reference regarding operations with time is from Programiz
+#Link: https://www.programiz.com/python-programming/time
